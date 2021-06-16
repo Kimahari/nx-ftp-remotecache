@@ -1,0 +1,6 @@
+*.ts
+package-lock.json
+*.tgz
+.editorconfig
+.prettierrc.json
+tsconfig.json
