@@ -1,6 +1,6 @@
 {
-    "name": "@kimahari/nx-ftp-remotecache",
-    "version": "1.0.0",
+    "name": "@kimahari/nx-ftp-remote-cache",
+    "version": "0.0.1",
     "description": "Remote caching for @nrwl/nx using ftp",
     "main": "index.js",
     "scripts": {
@@ -27,5 +27,9 @@
     },
     "peerDependencies": {
         "@nrwl/workspace": ">=9.2.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Kimahari/nx-ftp-remotecache"
     }
 }
