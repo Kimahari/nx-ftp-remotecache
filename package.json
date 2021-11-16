@@ -11,8 +11,8 @@
     "license": "MIT",
     "devDependencies": {
         "@angular-devkit/schematics": "^12.0.4",
-        "@nrwl/linter": "^11.6.3",
-        "@nrwl/workspace": "^11.6.3",
+        "@nrwl/linter": "^13.1.4",
+        "@nrwl/workspace": "^13.1.4",
         "@types/ftp": "^0.3.31",
         "@types/minimist": "^1.2.1",
         "@types/mkdirp": "^1.0.1",

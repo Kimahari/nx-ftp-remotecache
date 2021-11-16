@@ -60,7 +60,7 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
 
             output.logSingleLine(`Downloaded nx cache! ${hash}`);
             return true;
-        } catch (error) {
+        } catch (error: any) {
             output.error({
                 title: `Error occurred whilst downloading nx cache! : ${error.message}`
             });
@@ -82,7 +82,7 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
 
             output.logSingleLine(`Uploaded nx cache! ${hash}`);
             return true;
-        } catch (error) {
+        } catch (error: any) {
             output.error({
                 title: `Error occurred whilst uploading nx cache! : ${error.message}`
             });
