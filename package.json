@@ -12,7 +12,7 @@
     "devDependencies": {
         "@angular-devkit/schematics": "^12.0.4",
         "@nrwl/linter": "^11.6.3",
-        "@nrwl/workspace": "^11.1.1",
+        "@nrwl/workspace": "^11.6.3",
         "@types/ftp": "^0.3.31",
         "@types/minimist": "^1.2.1",
         "@types/mkdirp": "^1.0.1",
@@ -26,7 +26,7 @@
         "mkdirp": "^1.0.4"
     },
     "peerDependencies": {
-        "@nrwl/workspace": ">=9.2.2"
+        "@nrwl/workspace": ">=11.6.3"
     },
     "repository": {
         "type": "git",
