@@ -8,8 +8,8 @@ import { RunnerOptions } from './interfaces/runner-options';
 import { performance } from 'perf_hooks';
 import { output } from '@nrwl/workspace'
 
-function getGitBranch(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+async function getGitBranch(): Promise<string> {
+    return await new Promise<string>((resolve, reject) => {
         exec('git rev-parse --abbrev-ref HEAD', (err: any, stdout: string, _: string) => {
             if (err) {
                 reject(err);
