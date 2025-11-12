@@ -4,5 +4,6 @@ export const ftpStatus = {
     ftpListerner: () => { },
     connected: false,
     ftp: new Client(),
-    verboseEnabled: false
+    verboseEnabled: false,
+    currentDirectory: ''
 }
