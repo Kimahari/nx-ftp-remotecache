@@ -35,10 +35,11 @@ export class Repository {
         return true;
     }
 
-    public async diconnect() {
+    public async disconnect() {
         ftpStatus.ftp.off('ready', ftpStatus.ftpListerner);
         if (ftpStatus.connected) ftpStatus.ftp.destroy()
         ftpStatus.connected = false;
+        ftpStatus.currentDirectory = '';
     }
 
     async containsFile(fileName: string) {
@@ -127,23 +128,29 @@ export class Repository {
                 }
 
                 const folders: ListingElement[] = [];
+                const files: ListingElement[] = [];
 
                 for (const item of listing) {
                     if (item.type === 'l') continue;
 
                     if (item.type === 'd') {
                         folders.push(item);
-                        continue;
+                    } else {
+                        files.push(item);
                     }
+                }
 
+                // Download all files in parallel
+                await Promise.all(files.map(async (item) => {
                     const cacheDestination = join(destination, item.name);
                     logDebug('FILENAME', item.name);
                     await this.downloadFile(join(path, item.name), cacheDestination);
-                }
+                }));
 
-                for (const item of folders) {
+                // Download subdirectories in parallel
+                await Promise.all(folders.map(async (item) => {
                     await this.downloadDirectory(join(path, item.name), join(destination, item.name));
-                }
+                }));
 
                 resolve(true);
             });
@@ -151,16 +158,24 @@ export class Repository {
     }
 
     async uploadDirectory(pathToUpload: string, cacheDirectory: string) {
-        for (const entry of await promises.readdir(pathToUpload)) {
+        const entries = await promises.readdir(pathToUpload);
+        
+        // Collect all files and directories
+        const operations = await Promise.all(entries.map(async (entry) => {
             const full = join(pathToUpload, entry);
             const stats = await promises.stat(full);
+            return { full, stats };
+        }));
 
-            if (stats.isDirectory()) {
-                await this.uploadDirectory(full, cacheDirectory);
-            } else if (stats.isFile()) {
-                await this.uploadFile(full, cacheDirectory);
-            }
-        }
+        // Separate files and directories
+        const files = operations.filter(op => op.stats.isFile());
+        const directories = operations.filter(op => op.stats.isDirectory());
+
+        // Upload all files in parallel
+        await Promise.all(files.map(op => this.uploadFile(op.full, cacheDirectory)));
+
+        // Upload all directories in parallel
+        await Promise.all(directories.map(op => this.uploadDirectory(op.full, cacheDirectory)));
     }
 
 

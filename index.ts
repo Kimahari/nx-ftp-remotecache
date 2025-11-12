@@ -21,13 +21,16 @@ async function getGitBranch(): Promise<string> {
     })
 }
 
-export default function runner(tasks: Task[], options: RunnerOptions, context?: RunnerContext) {
+export default async function runner(tasks: Task[], options: RunnerOptions, context?: RunnerContext) {
     const projectName = options.projectName;
     const repository = new Repository(options.host, options.port, options.user, options.password);
 
     repository.toggleVerbose(options.verbose)
 
     let start = 0;
+    
+    // Cache git branch name once at initialization instead of on every operation
+    const branch = await getGitBranch();
 
     return defaultTaskRunner(tasks, { ...options, remoteCache: { retrieve, store }, lifeCycle: { startTask, endTask } }, context);
 
@@ -42,7 +45,6 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
 
     async function retrieve(hash: string, cacheDirectory: string): Promise<boolean> {
         try {
-            const branch = await getGitBranch()
             await repository.Connect(projectName, branch);
 
             const hashFileName = `${hash}.commit`;
@@ -66,7 +68,7 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
             });
             return false;
         } finally {
-            await repository.diconnect();
+            await repository.disconnect();
         }
     }
 
@@ -74,7 +76,6 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
         try {
             output.logSingleLine('Uploading NX Cache...')
 
-            const branch = await getGitBranch()
             await repository.Connect(projectName, branch);
 
             await repository.uploadDirectory(join(cacheDirectory, hash), cacheDirectory);
@@ -88,7 +89,7 @@ export default function runner(tasks: Task[], options: RunnerOptions, context?: 
             });
             return false;
         } finally {
-            await repository.diconnect();
+            await repository.disconnect();
         }
     }
 }
